@@ -82,4 +82,3 @@ for i in range(100):
         "diplomatic_level": random.randint(1, 5),
         "arrival_time": 19.40 + i * 0.005
     })
-
