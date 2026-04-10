@@ -1,17 +1,31 @@
 import APP_datasets
 
-###To use the variables inside APP_datasets : make sure to add "APP_datasets." before the variable. 
-
-#Test : print(APP_datasets.avions_chaos_100)
-
-Policies_order=[
-    ("fuel","int"),
-    ("technical_issue","bool"),
-    ("medical","bool"),
-    ("diplomatic_level","int")
+#Here we define the order of our policies, so in that case fuel is important
+policies_orders = [
+    ("fuel",             "int"),
+    ("medical",          "bool"),
+    ("technical_Issue",  "bool"),
+    ("diplomatic_level", "int")
 ]
 
-def insertionSort(dataset, sort_key):
+def compare(a, b, sort_key, key_type):
+    """The role of this function is to define how two dictionaries are compared depending on the type of the key
+    a & b : dictionnary 
+    sort_key : key to compare, mostly String
+    key_type : Type to detect, mostly String
+    output : Confirms if a should come before or after b, boolean
+    """
+    if key_type == "bool":
+        return a[sort_key] > b[sort_key]
+    return a[sort_key] < b[sort_key]
+
+def insertionSort(dataset, sort_key, key_type):
+    """This function sorts the list by building a sorted portion one element at a time from left to right.
+    dataset : List of dictionaries
+    sort_key : key to compare, mostly String
+    key_type : Type to detect, mostly String
+    output : dataset but sorted
+    """
     global duplicates, duplicates_index
     duplicates = []
     duplicates_index = []
@@ -19,7 +33,7 @@ def insertionSort(dataset, sort_key):
     for i in range(1, len(dataset)):
         key = dataset[i]
         j = i - 1
-        while j >= 0 and key[sort_key] < dataset[j][sort_key]:
+        while j >= 0 and compare(key, dataset[j], sort_key, key_type):
             dataset[j + 1] = dataset[j]
             j -= 1
         dataset[j + 1] = key
@@ -32,8 +46,13 @@ def insertionSort(dataset, sort_key):
 
     return dataset
 
-
-def selectionSort(dataset, sort_key):
+def selectionSort(dataset, sort_key, key_type):
+    """This function sorts the list by repeatedly finding the element that should come first and placing it at the front.
+    dataset : List of dictionaries
+    sort_key : key to compare, mostly String
+    key_type : Type to detect, mostly String
+    output : dataset but sorted
+    """
     global duplicates, duplicates_index
     duplicates = []
     duplicates_index = []
@@ -41,7 +60,7 @@ def selectionSort(dataset, sort_key):
     for i in range(len(dataset)):
         min_idx = i
         for j in range(i + 1, len(dataset)):
-            if dataset[j][sort_key] < dataset[min_idx][sort_key]:
+            if compare(dataset[j], dataset[min_idx], sort_key, key_type):
                 min_idx = j
         dataset[i], dataset[min_idx] = dataset[min_idx], dataset[i]
 
@@ -55,37 +74,39 @@ def selectionSort(dataset, sort_key):
 
 
 def sort_with_tiebreaker(dataset, sort_keys):
+    """This function is the main function to use for sorting the datasets and how it manages if there are tiebreakers, then the policies switches.
+    dataset : List of dictionaries
+    sort_keys : List of policies/tuples
+    """
     global duplicates, duplicates_index
 
-    #First insertion sort by sort_keys[0]
-    insertionSort(dataset, sort_keys[0])
+    first_key, first_type = sort_keys[0]
+    insertionSort(dataset, first_key, first_type)
 
-    #Loop through remaining keys if there are still tie-breakers
     key_index = 1
     while duplicates and key_index < len(sort_keys):
-        current_key = sort_keys[key_index]
-        tied_values = [d[sort_keys[key_index - 1]] for d in duplicates]
+        current_key, current_type = sort_keys[key_index]
+        prev_key, prev_type       = sort_keys[key_index - 1]
+        tied_values = [d[prev_key] for d in duplicates]
 
         for val in tied_values:
             group_start = None
-            group_end = None
+            group_end   = None
             for i in range(len(dataset)):
-                if dataset[i][sort_keys[key_index - 1]] == val:
+                if dataset[i][prev_key] == val:
                     if group_start is None:
                         group_start = i
                     group_end = i
 
             tied_group = dataset[group_start:group_end + 1]
 
-            #Alternate between insertion (even) and selection (odd)
             if key_index % 2 == 0:
-                insertionSort(tied_group, current_key)
+                insertionSort(tied_group, current_key, current_type)
             else:
-                selectionSort(tied_group, current_key)
+                selectionSort(tied_group, current_key, current_type)
 
             dataset[group_start:group_end + 1] = tied_group
 
-        #Recheck for duplicates on the whole list
         duplicates = []
         duplicates_index = []
         for i in range(len(dataset)):
@@ -95,8 +116,5 @@ def sort_with_tiebreaker(dataset, sort_keys):
                     duplicates_index.append(j)
 
         key_index += 1
-
-    if not duplicates:
-        pass
 
     return dataset
