@@ -4,9 +4,12 @@ import APP_datasets
 
 #Test : print(APP_datasets.avions_chaos_100)
 
-policies_orders=[str(input("Select the order by typing one by one the policies as written : fuel, medical, techinical_issue and diplomatic_level")) for i in range(4)]
-
-
+Policies_order=[
+    ("fuel","int"),
+    ("technical_issue","bool"),
+    ("medical","bool"),
+    ("diplomatic_level","int")
+]
 
 def insertionSort(dataset, sort_key):
     global duplicates, duplicates_index
