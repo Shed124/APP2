@@ -85,42 +85,44 @@ def sort_with_tiebreaker(dataset, sort_keys):
     sort_keys : List of policies/tuples
     """
     global duplicates, duplicates_index
-
-    first_key, first_type = sort_keys[0]
-    insertionSort(dataset, first_key, first_type)
-
-    key_index = 1
-    while duplicates and key_index < len(sort_keys):
-        current_key, current_type = sort_keys[key_index]
-        prev_key, prev_type       = sort_keys[key_index - 1]
-        tied_values = [d[prev_key] for d in duplicates]
-
-        for val in tied_values:
-            group_start = None
-            group_end   = None
+    if len(sort_keys)==0:
+        return "The list of policies is empty"
+    else:
+        first_key, first_type = sort_keys[0]
+        insertionSort(dataset, first_key, first_type)
+    
+        key_index = 1
+        while duplicates and key_index < len(sort_keys):
+            current_key, current_type = sort_keys[key_index]
+            prev_key, prev_type       = sort_keys[key_index - 1]
+            tied_values = [d[prev_key] for d in duplicates]
+    
+            for val in tied_values:
+                group_start = None
+                group_end   = None
+                for i in range(len(dataset)):
+                    if dataset[i][prev_key] == val:
+                        if group_start is None:
+                            group_start = i
+                        group_end = i
+    
+                tied_group = dataset[group_start:group_end + 1]
+    
+                if key_index % 2 == 0:
+                    insertionSort(tied_group, current_key, current_type)
+                else:
+                    selectionSort(tied_group, current_key, current_type)
+    
+                dataset[group_start:group_end + 1] = tied_group
+    
+            duplicates = []
+            duplicates_index = []
             for i in range(len(dataset)):
-                if dataset[i][prev_key] == val:
-                    if group_start is None:
-                        group_start = i
-                    group_end = i
-
-            tied_group = dataset[group_start:group_end + 1]
-
-            if key_index % 2 == 0:
-                insertionSort(tied_group, current_key, current_type)
-            else:
-                selectionSort(tied_group, current_key, current_type)
-
-            dataset[group_start:group_end + 1] = tied_group
-
-        duplicates = []
-        duplicates_index = []
-        for i in range(len(dataset)):
-            for j in range(i + 1, len(dataset)):
-                if dataset[i] == dataset[j] and dataset[i] not in duplicates:
-                    duplicates.append(dataset[i])
-                    duplicates_index.append(j)
-
-        key_index += 1
-
-    return dataset
+                for j in range(i + 1, len(dataset)):
+                    if dataset[i] == dataset[j] and dataset[i] not in duplicates:
+                        duplicates.append(dataset[i])
+                        duplicates_index.append(j)
+    
+            key_index += 1
+    
+        return dataset
