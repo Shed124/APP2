@@ -2,6 +2,9 @@ import APP_datasets
 
 
 def policies_order():
+    """This function defines our policies order by asking the user to input the order of the policies one by one
+    Output : String if the user has done something wrong, List of Tuples if everything is good.
+    """
     global policies_orders
     policies_orders=[]
     for i in range(4):
@@ -15,9 +18,9 @@ def policies_order():
     return policies_orders
 
 def compare(a, b, sort_key, key_type):
-    """The role of this function is to define how two dictionaries are compared depending on the type of the key
+    """The role of this function is to define how two dictionaries are compared depending on the type of the key.
     a & b : dictionnary 
-    sort_key : key to compare, mostly String
+    sort_key : Key to compare, mostly String
     key_type : Type to detect, mostly String
     output : Confirms if a should come before or after b, boolean
     """
@@ -30,7 +33,7 @@ def insertionSort(dataset, sort_key, key_type):
     dataset : List of dictionaries
     sort_key : key to compare, mostly String
     key_type : Type to detect, mostly String
-    output : dataset but sorted
+    output : Dataset but sorted
     """
     global duplicates, duplicates_index
     duplicates = []
@@ -79,22 +82,22 @@ def selectionSort(dataset, sort_key, key_type):
     return dataset
 
 
-def sort_with_tiebreaker(dataset, sort_keys):
+def sort_with_tiebreaker(dataset, policies):
     """This function is the main function to use for sorting the datasets and how it manages if there are tiebreakers, then the policies switches.
     dataset : List of dictionaries
-    sort_keys : List of policies/tuples
+    policies : List of policies/tuples
     """
     global duplicates, duplicates_index
-    if len(sort_keys)==0:
+    if len(policies)==0:
         return "The list of policies is empty"
     else:
-        first_key, first_type = sort_keys[0]
+        first_key, first_type = policies[0]
         insertionSort(dataset, first_key, first_type)
     
         key_index = 1
-        while duplicates and key_index < len(sort_keys):
-            current_key, current_type = sort_keys[key_index]
-            prev_key, prev_type       = sort_keys[key_index - 1]
+        while duplicates and key_index < len(policies):
+            current_key, current_type = policies[key_index]
+            prev_key, prev_type       = policies[key_index - 1]
             tied_values = [d[prev_key] for d in duplicates]
     
             for val in tied_values:
