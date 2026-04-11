@@ -1,12 +1,18 @@
 import APP_datasets
 
-#Here we define the order of our policies, so in that case fuel is important
-policies_orders = [
-    ("fuel",             "int"),
-    ("medical",          "bool"),
-    ("technical_Issue",  "bool"),
-    ("diplomatic_level", "int")
-]
+
+def policies_order():
+    global policies_orders
+    policies_orders=[]
+    for i in range(4):
+        L=str(input("Enter the policies order with the actual writing which is ; fuel, medical, technical_issue and diplomatic_level one by one : "))
+        if L=="fuel" or L=="diplomatic_level":
+            policies_orders.append((L,"int"))
+        elif L=="medical" or L=="technical_issue":
+            policies_orders.append((L,"bool"))
+        else:
+            return "Error in the typing of the policy or policy not found."
+    return policies_orders
 
 def compare(a, b, sort_key, key_type):
     """The role of this function is to define how two dictionaries are compared depending on the type of the key
