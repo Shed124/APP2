@@ -14,6 +14,7 @@ def policies_order():
         elif L=="medical" or L=="technical_issue":
             policies_orders.append((L,"bool"))
         else:
+            policies_orders=[]
             return "Error in the typing of the policy or policy not found."
     return policies_orders
 
