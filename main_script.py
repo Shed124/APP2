@@ -39,21 +39,26 @@ def insertionSort(dataset, sort_key, key_type):
     global duplicates, duplicates_index
     duplicates = []
     duplicates_index = []
-
+    
     for i in range(1, len(dataset)):
         key = dataset[i]
         j = i - 1
-        while j >= 0 and compare(key, dataset[j], sort_key, key_type):
-            dataset[j + 1] = dataset[j]
-            j -= 1
+        if sort_key == "diplomatic_level":
+            while j >= 0 and not compare(key, dataset[j], sort_key, key_type):
+                dataset[j + 1] = dataset[j]
+                j -= 1
+        else:
+            while j >= 0 and compare(key, dataset[j], sort_key, key_type):
+                dataset[j + 1] = dataset[j]
+                j -= 1
         dataset[j + 1] = key
-
+    
     for i in range(len(dataset)):
         for j in range(i + 1, len(dataset)):
             if dataset[i] == dataset[j] and dataset[i] not in duplicates:
                 duplicates.append(dataset[i])
                 duplicates_index.append(j)
-
+                
     return dataset
 
 def selectionSort(dataset, sort_key, key_type):
@@ -66,20 +71,24 @@ def selectionSort(dataset, sort_key, key_type):
     global duplicates, duplicates_index
     duplicates = []
     duplicates_index = []
-
+    
     for i in range(len(dataset)):
         min_idx = i
         for j in range(i + 1, len(dataset)):
-            if compare(dataset[j], dataset[min_idx], sort_key, key_type):
-                min_idx = j
+            if sort_key == "diplomatic_level":
+                if not compare(dataset[j], dataset[min_idx], sort_key, key_type):
+                    min_idx = j
+            else:
+                if compare(dataset[j], dataset[min_idx], sort_key, key_type):
+                    min_idx = j
         dataset[i], dataset[min_idx] = dataset[min_idx], dataset[i]
-
+    
     for i in range(len(dataset)):
         for j in range(i + 1, len(dataset)):
             if dataset[i] == dataset[j] and dataset[i] not in duplicates:
                 duplicates.append(dataset[i])
                 duplicates_index.append(j)
-
+                
     return dataset
 
 
